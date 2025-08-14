@@ -1,9 +1,12 @@
 "use server"
+
+
+const AGENT_URL = process.env.AGENT_URL || "";
+
 export async function getResponse(message: string[]) {
 
   const data = JSON.stringify({ messages: message })
-  console.log("*************data", data)
-  const res = await fetch("http://127.0.0.1:8000/chat", {
+  const res = await fetch(AGENT_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -11,7 +14,6 @@ export async function getResponse(message: string[]) {
     body: data ,
   });
 
-  console.log("*************response", res)
 
   const reader = res.body?.getReader();
   const decoder = new TextDecoder();
