@@ -6,10 +6,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Send, User, Bot, Sparkles, MessageCircle } from 'lucide-react'
-import { getResponse } from '../actions/botActions'
+import { getResponse, getArchitecture } from '../actions/botActions'
+import ArchitectureDiagram from '@/components/ui/ArchitectureDiagram'
+import type { ArchitectureData } from '@/app/types/architecture'
+import { toPng } from 'html-to-image'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([])
+  const [messages, setMessages] = useState<{ sender: 'user' | 'bot'; text: string; arch?: ArchitectureData }[]>([])
   const [input, setInput] = useState('')
   const [botResponse, setBotResponse] = useState('')
   const msgRef = useRef<HTMLDivElement>(null)
@@ -45,6 +50,51 @@ export default function ChatPage() {
 
     setBotResponse('')
     setInput('')
+
+    // After the bot has finished, request the architecture from backend and append under the bot message
+    try {
+      const arch = await getArchitecture(input)
+      setMessages(prev => {
+        const newMessages = [...prev]
+        const i = newMessages.length - 1
+        if (newMessages[i]?.sender === 'bot') {
+          newMessages[i] = { ...newMessages[i], arch }
+        }
+        return newMessages
+      })
+    } catch (e) {
+      // Ignore diagram on failure; chat content remains
+      console.warn('Failed to fetch architecture', e)
+    }
+  }
+
+  const downloadDiagramPng = async (idx: number) => {
+    const container = document.getElementById(`arch-${idx}`)
+    if (!container) return
+    const target = (container.querySelector('.react-flow') as HTMLElement) || container
+    await new Promise(r => setTimeout(r, 50))
+    try {
+      const dataUrl = await toPng(target, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
+        // filter can exclude controls/minimap if desired
+        filter: (node: Element) => {
+          const el = node as HTMLElement
+          // keep main canvas, labels and edges; exclude minimap/controls background
+          if (!el) return true
+          const cls = el.className?.toString?.() || ''
+          if (cls.includes('react-flow__minimap') || cls.includes('react-flow__controls')) return false
+          return true
+        }
+      })
+      const a = document.createElement('a')
+      a.href = dataUrl
+      a.download = `architecture-${idx + 1}.png`
+      a.click()
+    } catch (err) {
+      console.warn('PNG export failed', err)
+    }
   }
 
   return (
@@ -152,13 +202,25 @@ export default function ChatPage() {
                         msg.sender === 'user'
                           ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-tr-md'
                           : 'bg-white/80 border border-gray-200/50 text-gray-800 rounded-tl-md'
-                      }`}>
-                        <div className="whitespace-pre-wrap leading-relaxed">
-                          {msg.sender === 'bot' && msg === messages[messages.length - 1] && botResponse !== ""
-                            ? botResponse
-                            : msg.text}
+                      }`} id={msg.sender === 'bot' ? `bot-msg-${idx}` : undefined}>
+                        <div className="leading-relaxed">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.sender === 'bot' && msg === messages[messages.length - 1] && botResponse !== ""
+                              ? botResponse
+                              : msg.text}
+                          </ReactMarkdown>
                         </div>
                       </div>
+                      {msg.sender === 'bot' && msg.arch && (
+                        <div className="mt-3" id={`arch-${idx}`}>
+                          <ArchitectureDiagram data={msg.arch} />
+                          <div className="mt-2 flex justify-end">
+                            <Button onClick={() => downloadDiagramPng(idx)} className="h-8 px-3 rounded-lg bg-gradient-to-r from-gray-700 to-gray-900 text-white">
+                              Download Diagram (PNG)
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
