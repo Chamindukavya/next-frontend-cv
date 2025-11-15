@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Send, User, Bot, Sparkles, MessageCircle } from 'lucide-react'
+import { Send, User, Bot, Sparkles, MessageCircle, ClipboardList, FilePenLine } from 'lucide-react'
 import { getResponse, getArchitecture } from '../actions/botActions'
 import ArchitectureDiagram from '@/components/ui/ArchitectureDiagram'
 import type { ArchitectureData } from '@/app/types/architecture'
@@ -107,9 +107,9 @@ export default function ChatPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              AI Assistant
+              Software Engineering Workbench
             </h1>
-            <p className="text-sm text-gray-500">Ask Questions related to my CV</p>
+            <p className="text-sm text-gray-500">Automate software design from requirements</p>
           </div>
         </div>
 
@@ -117,36 +117,18 @@ export default function ChatPage() {
           <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 h-full flex flex-col">
             <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
               <MessageCircle className="w-5 h-5 text-indigo-500" />
-              About This Assistant
+              About This Workbench
             </h3>
             <div className="flex-1 overflow-y-auto">
               <div className="space-y-3 text-sm text-gray-600 leading-relaxed">
                 <p>
-                  My virtual assistant is designed to answer questions specifically related to my CV. It can provide information such as my personal details, education, work experience, skills, and achievements.
+                  This workbench automates software design. Enter high-level requirements and it will generate a solution architecture with explained design decisions and a visual diagram.
+Try ‘Build an e-commerce website’ as an example to see suggested components and reasoning.
                 </p>
                 <p>
-                   For example, if asked 'What is your name?', the assistant will respond, 'I am Chamindu.'
-                   </p>
-                   <p>
-                    It serves as an interactive way to present my professional profile.
+                  You can refine requirements, review updated architecture suggestions, and export diagrams.                
                 </p>
-                {/* <p>
-                  Whether you need help with work, want to brainstorm ideas, learn something new, or just have a friendly chat, I'm ready to assist you.
-                </p>
-                <p>
-                  Feel free to ask me anything - from complex questions to simple requests. I'll do my best to provide helpful, accurate, and engaging responses.
-                </p> */}
               </div>
-              
-              {/* <div className="mt-6 p-4 bg-white/70 rounded-xl border border-indigo-200/50">
-                <h4 className="font-medium text-gray-800 mb-2">Quick Tips:</h4>
-                <ul className="text-xs text-gray-600 space-y-1">
-                  <li>• Be specific in your questions</li>
-                  <li>• Ask for examples when needed</li>
-                  <li>• Request different formats or styles</li>
-                  <li>• Feel free to ask follow-up questions</li>
-                </ul>
-              </div> */}
             </div>
           </div>
         </div>
@@ -154,7 +136,7 @@ export default function ChatPage() {
         <div className="mt-6 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full text-sm text-gray-600">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            Ready to chat
+            Ready for your project requirements
           </div>
         </div>
       </div>
@@ -170,10 +152,24 @@ export default function ChatPage() {
                   <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
                     <MessageCircle className="w-10 h-10 text-indigo-500" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-3">Start a conversation</h3>
-                  <p className="text-gray-500 mb-8 max-w-md mx-auto">
-                    Send a message to begin chatting with your AI assistant. Ask questions, get help, or just have a friendly conversation.
-                  </p>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-6">Start your project design</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto mb-8">
+                    <div className="bg-white/80 border border-indigo-100 rounded-xl p-6 shadow-sm flex flex-col items-center">
+                      <ClipboardList className="w-8 h-8 text-indigo-500 mb-2" />
+                      <h4 className="font-semibold text-gray-800 mb-2">Describe Requirements</h4>
+                      <p className="text-sm text-gray-600">Enter your high-level project requirements to begin the design process.</p>
+                    </div>
+                    <div className="bg-white/80 border border-indigo-100 rounded-xl p-6 shadow-sm flex flex-col items-center">
+                      <Bot className="w-8 h-8 text-purple-500 mb-2" />
+                      <h4 className="font-semibold text-gray-800 mb-2">Architecture Suggestions</h4>
+                      <p className="text-sm text-gray-600">Receive solution architecture and reasoning tailored to your project.</p>
+                    </div>
+                    <div className="bg-white/80 border border-indigo-100 rounded-xl p-6 shadow-sm flex flex-col items-center">
+                      <FilePenLine className="w-8 h-8 text-cyan-500 mb-2" />
+                      <h4 className="font-semibold text-gray-800 mb-2">Edit & Download</h4>
+                      <p className="text-sm text-gray-600">Refine the architecture diagram and export it for documentation or development.</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -238,7 +234,7 @@ export default function ChatPage() {
                 <Input
                   value={input}
                   onChange={e => setInput(e.target.value)}
-                  placeholder="Type your message here..."
+                  placeholder="Describe your project requirements..."
                   onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
                   className="min-h-[52px] rounded-2xl border-gray-300/50 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500/50 py-4 px-6 pr-14 resize-none shadow-sm text-base"
                   disabled={botResponse !== ''}
