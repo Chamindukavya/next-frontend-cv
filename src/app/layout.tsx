@@ -25,9 +25,31 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
       >
-        {children}
+        <div className="min-h-screen flex flex-col">
+          <header className="w-full border-b" style={{ borderColor: 'var(--sidebar-border)' }}>
+            <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12))' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L19 8V16L12 22L5 16V8L12 2Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </div>
+                <div>
+                  <div className="font-semibold">Architecture Workbench</div>
+                  <div className="text-xs text-[var(--muted-foreground)]">Design assistant & visual workbench</div>
+                </div>
+              </div>
+
+              <nav className="flex items-center gap-3 text-sm text-[var(--muted-foreground)]">
+                <a href="/" className="px-3 py-1 rounded-md hover:bg-[var(--sidebar)]/30">Home</a>
+                <a href="/bot" className="px-3 py-1 rounded-md hover:bg-[var(--sidebar)]/30">Workbench</a>
+                <div className="px-3 py-1 rounded-md">v1.0</div>
+              </nav>
+            </div>
+          </header>
+
+          <main className="flex-1">{children}</main>
+        </div>
       </body>
     </html>
   );

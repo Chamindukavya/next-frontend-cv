@@ -28,12 +28,13 @@ function useLayout(data: ArchitectureData) {
         style: {
           padding: 12,
           borderRadius: 12,
-          border: '1px solid #e2e8f0',
-          background: '#ffffff',
+          border: '1px solid var(--border)',
+          background: 'var(--card)',
+          color: 'var(--card-foreground)',
           fontSize: 12,
           minWidth: 120,
           textAlign: 'center',
-          boxShadow: '0 4px 8px rgba(0,0,0,0.04)'
+          boxShadow: '0 6px 12px rgba(2,6,23,0.3)'
         }
       };
     });
@@ -44,8 +45,8 @@ function useLayout(data: ArchitectureData) {
       target: e.target,
       label: e.label,
       animated: true,
-      style: { stroke: '#6366f1' },
-      labelStyle: { fontSize: 10, fill: '#334155' }
+      style: { stroke: 'var(--chart-1)' },
+      labelStyle: { fontSize: 10, fill: 'var(--foreground)' }
     }));
 
     return { nodes, edges };
@@ -72,10 +73,10 @@ export const ArchitectureDiagram: React.FC<Props> = ({ data, height = 500 }) => 
   }, []);
 
   return (
-    <div className="w-full border rounded-xl bg-white/80 backdrop-blur-sm shadow-sm overflow-hidden">
-      <div className="px-4 pt-4 pb-2 border-b">
-        <h3 className="text-sm font-semibold text-gray-700">Architecture Diagram</h3>
-        <p className="text-xs text-gray-500 mt-1">Auto-generated layout. Drag to reposition if desired.</p>
+    <div className="w-full border rounded-xl shadow-sm overflow-hidden" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
+      <div className="px-4 pt-4 pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
+        <h3 className="text-sm font-semibold" style={{ color: 'var(--card-foreground)' }}>Architecture Diagram</h3>
+        <p className="text-xs mt-1" style={{ color: 'var(--muted-foreground)' }}>Auto-generated layout. Drag to reposition if desired.</p>
       </div>
       <div style={{ width: '100%', height }}>
         <ReactFlow 
@@ -93,9 +94,9 @@ export const ArchitectureDiagram: React.FC<Props> = ({ data, height = 500 }) => 
         </ReactFlow>
       </div>
       {data.reasons?.length ? (
-        <div className="p-4 border-t bg-white/70">
-          <h4 className="text-xs font-semibold text-gray-600 mb-2">Design Rationale</h4>
-          <ul className="space-y-1 list-disc list-inside text-xs text-gray-600">
+        <div className="p-4 border-t" style={{ borderColor: 'var(--border)', background: 'var(--popover)' }}>
+          <h4 className="text-xs font-semibold mb-2" style={{ color: 'var(--card-foreground)' }}>Design Rationale</h4>
+          <ul className="space-y-1 list-disc list-inside text-xs" style={{ color: 'var(--muted-foreground)' }}>
             {data.reasons.map((r, i) => (
               <li key={i}>{r}</li>
             ))}
